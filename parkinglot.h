@@ -20,6 +20,8 @@ private slots:
     void on_CarIn_clicked();
     void message_check();
 
+    void on_CarOut_clicked();
+
 private:
     Ui::ParkingLot *ui;
 };
