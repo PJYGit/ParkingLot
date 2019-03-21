@@ -10,6 +10,7 @@ int car = 1;
 QString nowCar;
 int carNum = 0;
 int checkRow = 0;
+int waitingCar = 0;
 
 ParkingLot::ParkingLot(QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +18,7 @@ ParkingLot::ParkingLot(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->Capacity->setText("10");
+    ui->Waiting->setText("0");
 }
 
 ParkingLot::~ParkingLot()
@@ -37,7 +39,7 @@ void ParkingLot::on_CarIn_clicked()
         QString temp = QString::number(car);
         car++;
         carBut->setObjectName(temp+"1");
-        QIcon carIcon(":/carPic/car.jpg");
+        QIcon carIcon(":/carPic/car2.jpg");
         carBut->setMinimumHeight(111);
         carBut->setMaximumHeight(111);
         carBut->setIcon(carIcon);
@@ -86,7 +88,7 @@ void ParkingLot::on_CarIn_clicked()
             QString temp = QString::number(car);
             car++;
             carBut->setObjectName(temp+"1");
-            QIcon carIcon(":/carPic/car.jpg");
+            QIcon carIcon(":/carPic/car2.jpg");
             carBut->setMinimumHeight(111);
             carBut->setMaximumHeight(111);
             carBut->setIcon(carIcon);
@@ -129,14 +131,14 @@ void ParkingLot::on_CarIn_clicked()
             QString temp = QString::number(car);
             car++;
             carBut->setObjectName(temp);
-            QIcon carIcon(":/carPic/car.jpg");
             carBut->setMinimumHeight(111);
             carBut->setMaximumHeight(111);
-            carBut->setIcon(carIcon);
-            carBut->setIconSize(carBut->size());
 
             //将待定车辆按钮加入等待队列
             queue.enqueue(carBut);
+            waitingCar++;
+            QString aux = QString::number(waitingCar);
+            ui->Waiting->setText(aux);
         }
     }
 
@@ -164,7 +166,7 @@ void ParkingLot::on_CarOut_clicked()
         //判断候车队列是否有车
         if (queue.size() > 0){
 
-            if (nowCar.endsWith("1")){//在第一行车库添加车辆
+            if (checkRow == 1){//在第一行车库添加车辆
                 //入库车辆数加一
                 carNum++;
                 //获取车辆入库时间
@@ -174,14 +176,21 @@ void ParkingLot::on_CarOut_clicked()
                 QPushButton *temp = queue.dequeue();
                 QString ex_name = temp->objectName();
                 temp->setObjectName(ex_name+"1");
+                QIcon carIcon(":/carPic/car2.jpg");
+                temp->setIcon(carIcon);
+                temp->setIconSize(temp->size());
+
                 ui->FirstRow->addWidget(temp);
                 connect(temp,SIGNAL(clicked()),this,SLOT(message_check()));
 
                 //将车辆信息加入QMap
                 carMes.insert(temp->objectName(),inTime);
+                waitingCar--;
+                QString aux = QString::number(waitingCar);
+                ui->Waiting->setText(aux);
             }
 
-            else if (nowCar.endsWith("2")){//在第二行车库添加车辆
+            else if (checkRow == 2){//在第二行车库添加车辆
                 //入库车辆数加一
                 carNum++;
                 //获取车辆入库时间
@@ -191,12 +200,18 @@ void ParkingLot::on_CarOut_clicked()
                 QPushButton *temp = queue.dequeue();
                 QString ex_name = temp->objectName();
                 temp->setObjectName(ex_name+"2");
-                ui->FirstRow->addWidget(temp);
+                QIcon carIcon(":/carPic/car.jpg");
+                temp->setIcon(carIcon);
+                temp->setIconSize(temp->size());
+
+                ui->SecondRow->addWidget(temp);
                 connect(temp,SIGNAL(clicked()),this,SLOT(message_check()));
 
                 //将车辆信息加入QMap
                 carMes.insert(temp->objectName(),inTime);
-
+                waitingCar--;
+                QString aux = QString::number(waitingCar);
+                ui->Waiting->setText(aux);
             }
 
         }
