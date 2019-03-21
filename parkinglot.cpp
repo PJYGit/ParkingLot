@@ -124,8 +124,6 @@ void ParkingLot::on_CarIn_clicked()
         }
 
         else if (carNum >= 10 && queue.size() < 5){
-            //等待车辆数加一
-            carNum++;
             //创建代表车辆的按钮
             QPushButton *carBut = new QPushButton;
             QString temp = QString::number(car);
@@ -133,6 +131,11 @@ void ParkingLot::on_CarIn_clicked()
             carBut->setObjectName(temp);
             carBut->setMinimumHeight(111);
             carBut->setMaximumHeight(111);
+            QIcon icon(":/carPic/car.jpg");
+            carBut->setIcon(icon);
+            carBut->setIconSize(carBut->size());
+
+            ui->WaitingRow->addWidget(carBut);
 
             //将待定车辆按钮加入等待队列
             queue.enqueue(carBut);
@@ -181,6 +184,7 @@ void ParkingLot::on_CarOut_clicked()
                 temp->setIconSize(temp->size());
 
                 ui->FirstRow->addWidget(temp);
+                ui->WaitingRow->removeWidget(temp);
                 connect(temp,SIGNAL(clicked()),this,SLOT(message_check()));
 
                 //将车辆信息加入QMap
@@ -205,6 +209,7 @@ void ParkingLot::on_CarOut_clicked()
                 temp->setIconSize(temp->size());
 
                 ui->SecondRow->addWidget(temp);
+                ui->WaitingRow->removeWidget(temp);
                 connect(temp,SIGNAL(clicked()),this,SLOT(message_check()));
 
                 //将车辆信息加入QMap
