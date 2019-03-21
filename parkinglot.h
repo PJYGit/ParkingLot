@@ -15,6 +15,11 @@ public:
     explicit ParkingLot(QWidget *parent = nullptr);
     ~ParkingLot();
 
+
+private slots:
+    void on_CarIn_clicked();
+    void message_check();
+
 private:
     Ui::ParkingLot *ui;
 };
