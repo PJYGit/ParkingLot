@@ -2,6 +2,10 @@
 #define PARKINGLOT_H
 
 #include <QMainWindow>
+#include <QPushButton>
+#include <QTime>
+#include <QQueue>
+#include <QMap>
 
 namespace Ui {
 class ParkingLot;
@@ -14,7 +18,6 @@ class ParkingLot : public QMainWindow
 public:
     explicit ParkingLot(QWidget *parent = nullptr);
     ~ParkingLot();
-
 
 private slots:
     void on_CarIn_clicked();
