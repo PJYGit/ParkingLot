@@ -23,7 +23,11 @@
       <height>111</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="FirstRow"/>
+    <layout class="QHBoxLayout" name="FirstRow">
+     <item>
+      <layout class="QGridLayout" name="FG"/>
+     </item>
+    </layout>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget_2">
     <property name="geometry">

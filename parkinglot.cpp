@@ -11,6 +11,7 @@ QString nowCar;
 int carNum = 0;
 int checkRow = 0;
 int waitingCar = 0;
+int col = 0;
 
 ParkingLot::ParkingLot(QWidget *parent) :
     QMainWindow(parent),
@@ -19,8 +20,9 @@ ParkingLot::ParkingLot(QWidget *parent) :
     ui->setupUi(this);
     ui->Capacity->setText("10");
     ui->Waiting->setText("0");
+    //ui->FG->setHorizontalSpacing(10);
+    //ui->FG->setContentsMargins(5,5,5,5);
 }
-
 ParkingLot::~ParkingLot()
 {
     delete ui;
@@ -89,11 +91,13 @@ void ParkingLot::on_CarIn_clicked()
             car++;
             carBut->setObjectName(temp+"1");
             QIcon carIcon(":/carPic/car2.jpg");
-            carBut->setMinimumHeight(111);
-            carBut->setMaximumHeight(111);
+            carBut->setMinimumSize(94,110);
+            carBut->setMaximumSize(94,110);
             carBut->setIcon(carIcon);
             carBut->setIconSize(carBut->size());
-            ui->FirstRow->addWidget(carBut);
+            ui->FG->addWidget(carBut,0,col,1,1);
+            col++;
+            ui->FG->setColumnStretch(col,1);
             connect(carBut,SIGNAL(clicked()),this,SLOT(message_check()));
 
             //将车辆信息加入QMap
