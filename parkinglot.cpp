@@ -4,6 +4,7 @@
 #include <QTime>
 #include <QQueue>
 #include <QStack>
+#include <QPropertyAnimation>
 
 QMap<QString,QTime> carMes;
 QQueue<QPushButton*> queue;
@@ -33,6 +34,9 @@ void ParkingLot::on_CarIn_clicked()
 {
     if (wstack.top() != nullptr && wstack.top()->objectName() == "1"){
 
+        CarInAnimation();
+
+
         //入库车辆数加一
         carNum++;
         //获取车辆入库时间
@@ -58,9 +62,12 @@ void ParkingLot::on_CarIn_clicked()
         //将车辆信息加入QMap
         carMes.insert(temp+"1",inTime);
         numInF++;
+
     }
 
     else if (wstack.top() != nullptr && wstack.top()->objectName() == "2"){
+        CarInAnimation();
+
 
         //入库车辆数加一
         carNum++;
@@ -92,6 +99,8 @@ void ParkingLot::on_CarIn_clicked()
     else if (wstack.top() == nullptr){
 
         if (carNum < 10 && numInF < 5){
+            CarInAnimation();
+
             //入库车辆数加一
             carNum++;
             //获取车辆入库时间
@@ -118,6 +127,8 @@ void ParkingLot::on_CarIn_clicked()
         }
 
         else if (carNum < 10 && numInS < 5) {
+            CarInAnimation();
+
             //入库车辆数加一
             carNum++;
             //获取车辆入库时间
@@ -194,6 +205,8 @@ void ParkingLot::on_CarOut_clicked()
         carMes.remove(nowCar);
         carNum--;
 
+        CarOutAnimation();
+
 
         //判断候车队列是否有车
         if (queue.size() > 0){
@@ -207,6 +220,8 @@ void ParkingLot::on_CarOut_clicked()
             QString ex_name = temp->objectName();
 
             if (nowCar.endsWith("1")){
+                CarInAnimation();
+
                 temp->setObjectName(ex_name+"1");
                 QIcon carIcon(":/carPic/car2.jpg");
                 temp->setIcon(carIcon);
@@ -218,6 +233,8 @@ void ParkingLot::on_CarOut_clicked()
             }
 
             if (nowCar.endsWith("2")){
+                CarInAnimation();
+
                 temp->setObjectName(ex_name+"2");
                 QIcon carIcon(":/carPic/car.jpg");
                 temp->setIcon(carIcon);
@@ -238,8 +255,8 @@ void ParkingLot::on_CarOut_clicked()
 
         }
 
-        else if (queue.size() == 0)
-            wstack.push(w);
+        else if (queue.size() == 0){wstack.push(w);}
+
 
     }
 
@@ -269,10 +286,61 @@ void ParkingLot::message_check()
     ui->Fee->setText(cur_fee);
 }
 
+void ParkingLot::CarInAnimation(int xright)
+{
+    QPushButton *temp = new QPushButton;
 
+    QIcon carIcon(":/carPic/in.jpg");
+    temp->setMinimumSize(111,94);
+    temp->setMaximumSize(111,94);
+    temp->setIcon(carIcon);
+    temp->setIconSize(temp->size());
 
+    ui->Road->addWidget(temp);
 
+    QPropertyAnimation *animation = new QPropertyAnimation(temp, "geometry");
+    animation->setDuration(3000);
+    animation->setStartValue(QRect(1,5,111,94));
+    animation->setEndValue(QRect(150,5,111,94));
 
+    animation->start();
+    my_sleep();
+    delete temp;
+    delete animation;
+}
+void ParkingLot::CarOutAnimation(int yleft)
+{
+    QPushButton *temp = new QPushButton;
+
+    QIcon carIcon(":/carPic/out.jpg");
+    temp->setMinimumSize(111,94);
+    temp->setMaximumSize(111,94);
+    temp->setIcon(carIcon);
+    temp->setIconSize(temp->size());
+
+    ui->Road->addWidget(temp);
+
+    QPropertyAnimation *animation = new QPropertyAnimation(temp, "geometry");
+    animation->setDuration(3000);
+    animation->setStartValue(QRect(150,5,111,94));
+    animation->setEndValue(QRect(1,5,111,94));
+
+    animation->start();
+
+    my_sleep();
+    delete temp;
+    delete animation;
+}
+
+//3秒延时函数
+void ParkingLot::my_sleep()
+{
+    QTime reachTime = QTime::currentTime().addSecs(3);
+
+    while (QTime::currentTime() < reachTime){
+        QCoreApplication::processEvents(QEventLoop::AllEvents,100);
+    }
+}
 
 
 

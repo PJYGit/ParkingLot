@@ -338,6 +338,17 @@
     </property>
     <layout class="QHBoxLayout" name="WaitingRow"/>
    </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_4">
+    <property name="geometry">
+     <rect>
+      <x>9</x>
+      <y>119</y>
+      <width>591</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="Road"/>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
