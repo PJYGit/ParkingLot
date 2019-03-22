@@ -21,6 +21,7 @@ public:
     void CarInAnimation(int xright);
     void CarOutAnimation(int xleft);
     void my_sleep();
+    void CalculateCarWidth(int num);
 
 private slots:
     void on_CarIn_clicked();

@@ -7,6 +7,7 @@
 #include <QPropertyAnimation>
 
 QMap<QString,QTime> carMes;
+QMap<QString,QString> carID;
 QQueue<QPushButton*> queue;
 QStack<QWidget*> wstack;
 int car = 1;
@@ -15,13 +16,19 @@ int carNum = 0;
 int numInF = 0;
 int numInS = 0;
 int waitingCar = 0;
+int max = 10;
+int first = 0;
+int second = 0;
+int carWidth = 94;
 
 ParkingLot::ParkingLot(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ParkingLot)
 {
     ui->setupUi(this);
-    ui->Capacity->setText("10");
+    QString temp = QString::number(max);
+    ui->Capacity->setText(temp);
+    CalculateCarWidth(max);
     ui->Waiting->setText("0");
     wstack.push(nullptr);
 }
@@ -48,8 +55,8 @@ void ParkingLot::on_CarIn_clicked()
         car++;
         carBut->setObjectName(temp+"1");
         QIcon carIcon(":/carPic/car2.jpg");
-        carBut->setMinimumSize(94,110);
-        carBut->setMaximumSize(94,110);
+        carBut->setMinimumSize(carWidth,110);
+        carBut->setMaximumSize(carWidth,110);
         carBut->setIcon(carIcon);
         carBut->setIconSize(carBut->size());
 
@@ -61,6 +68,7 @@ void ParkingLot::on_CarIn_clicked()
 
         //将车辆信息加入QMap
         carMes.insert(temp+"1",inTime);
+        carID.insert(temp+"1",ui->IDin->toPlainText());
         numInF++;
 
     }
@@ -80,8 +88,8 @@ void ParkingLot::on_CarIn_clicked()
         car++;
         carBut->setObjectName(temp+"2");
         QIcon carIcon(":/carPic/car.jpg");
-        carBut->setMinimumSize(94,110);
-        carBut->setMaximumSize(94,110);
+        carBut->setMinimumSize(carWidth,110);
+        carBut->setMaximumSize(carWidth,110);
         carBut->setIcon(carIcon);
         carBut->setIconSize(carBut->size());
 
@@ -93,13 +101,14 @@ void ParkingLot::on_CarIn_clicked()
 
         //将车辆信息加入QMap
         carMes.insert(temp+"2",inTime);
+        carID.insert(temp+"2",ui->IDin->toPlainText());
         numInS++;
     }
 
     else if (wstack.top() == nullptr){
 
-        if (carNum < 10 && numInF < 5){
-            CarInAnimation(110+numInF*94);
+        if (carNum < max && numInF < first){
+            CarInAnimation(110+numInF*carWidth);
 
             //入库车辆数加一
             carNum++;
@@ -112,8 +121,8 @@ void ParkingLot::on_CarIn_clicked()
             car++;
             carBut->setObjectName(temp+"1");
             QIcon carIcon(":/carPic/car2.jpg");
-            carBut->setMinimumSize(94,110);
-            carBut->setMaximumSize(94,110);
+            carBut->setMinimumSize(carWidth,110);
+            carBut->setMaximumSize(carWidth,110);
             carBut->setIcon(carIcon);
             carBut->setIconSize(carBut->size());
             ui->FG->addWidget(carBut,0,numInF,1,1);
@@ -123,11 +132,12 @@ void ParkingLot::on_CarIn_clicked()
 
             //将车辆信息加入QMap
             carMes.insert(temp+"1",inTime);
+            carID.insert(temp+"1",ui->IDin->toPlainText());
             numInF++;
         }
 
-        else if (carNum < 10 && numInS < 5) {
-            CarInAnimation(110+numInS*94);
+        else if (carNum < max && numInS < second) {
+            CarInAnimation(110+numInS*carWidth);
 
             //入库车辆数加一
             carNum++;
@@ -140,8 +150,8 @@ void ParkingLot::on_CarIn_clicked()
             car++;
             carBut->setObjectName(temp+"2");
             QIcon carIcon(":/carPic/car.jpg");
-            carBut->setMinimumSize(94,110);
-            carBut->setMaximumSize(94,110);
+            carBut->setMinimumSize(carWidth,110);
+            carBut->setMaximumSize(carWidth,110);
             carBut->setIcon(carIcon);
             carBut->setIconSize(carBut->size());
             ui->SG->addWidget(carBut,0,numInS,1,1);
@@ -151,17 +161,18 @@ void ParkingLot::on_CarIn_clicked()
 
             //将车辆信息加入QMap
             carMes.insert(temp+"2",inTime);
+            carID.insert(temp+"2",ui->IDin->toPlainText());
             numInS++;
         }
 
-        else if (carNum >= 10 && queue.size() < 5) {
+        else if (carNum >= max && queue.size() < 5) {
             //创建代表车辆的按钮
             QPushButton *carBut = new QPushButton;
             QString temp = QString::number(car);
             car++;
             carBut->setObjectName(temp);
-            carBut->setMinimumSize(94,110);
-            carBut->setMaximumSize(94,110);
+            carBut->setMinimumSize(carWidth,110);
+            carBut->setMaximumSize(carWidth,110);
             QIcon icon(":/carPic/car.jpg");
             carBut->setIcon(icon);
             carBut->setIconSize(carBut->size());
@@ -173,12 +184,15 @@ void ParkingLot::on_CarIn_clicked()
             waitingCar++;
             QString aux = QString::number(waitingCar);
             ui->Waiting->setText(aux);
+            carID.insert(carBut->objectName(),ui->IDin->toPlainText());
         }
 
         else {
             //TODO: 弹出窗口提示车库和候车区均已满
         }
     }
+
+    ui->IDin->setText("");
 }
 
 
@@ -188,7 +202,7 @@ void ParkingLot::on_CarOut_clicked()
     if (carNum > 0){
 
         QWidget *w = new QWidget;
-        w->setFixedSize(94,110);
+        w->setFixedSize(carWidth,110);
         QPushButton *temp = ui->centralWidget->findChild<QPushButton*>(nowCar);
         int aux = temp->x()+110;
         if (nowCar.endsWith("1")){
@@ -205,6 +219,7 @@ void ParkingLot::on_CarOut_clicked()
 
         delete temp;
         carMes.remove(nowCar);
+        carID.remove(nowCar);
         carNum--;
 
         CarOutAnimation(aux);
@@ -226,6 +241,10 @@ void ParkingLot::on_CarOut_clicked()
                 CarInAnimation(w->x()+110);
 
                 temp->setObjectName(ex_name+"1");
+                QString aux = carID[ex_name];
+                carID.remove(ex_name);
+                carID.insert(ex_name+"1",aux);
+
                 QIcon carIcon(":/carPic/car2.jpg");
                 temp->setIcon(carIcon);
                 temp->setIconSize(temp->size());
@@ -239,6 +258,10 @@ void ParkingLot::on_CarOut_clicked()
                 CarInAnimation(w->x()+110);
 
                 temp->setObjectName(ex_name+"2");
+                QString aux = carID[ex_name];
+                carID.remove(ex_name);
+                carID.insert(ex_name+"2",aux);
+
                 QIcon carIcon(":/carPic/car.jpg");
                 temp->setIcon(carIcon);
                 temp->setIconSize(temp->size());
@@ -281,6 +304,8 @@ void ParkingLot::message_check()
     QTime cur = QTime::currentTime();
     QString cur_time = cur.toString("hh:mm:ss");
     ui->CurTime->setText(cur_time);
+    QString id = carID[temp];
+    ui->IDout->setText(id);
 
     //计算当前收费
     int fee = cur.hour()*3600+cur.minute()*60+cur.second() -
@@ -294,8 +319,8 @@ void ParkingLot::CarInAnimation(int xright)
     QPushButton *temp = new QPushButton;
 
     QIcon carIcon(":/carPic/in.jpg");
-    temp->setMinimumSize(111,94);
-    temp->setMaximumSize(111,94);
+    temp->setMinimumSize(111,carWidth);
+    temp->setMaximumSize(111,carWidth);
     temp->setIcon(carIcon);
     temp->setIconSize(temp->size());
 
@@ -317,8 +342,8 @@ void ParkingLot::CarOutAnimation(int xleft)
     QPushButton *temp = new QPushButton;
 
     QIcon carIcon(":/carPic/out.jpg");
-    temp->setMinimumSize(111,94);
-    temp->setMaximumSize(111,94);
+    temp->setMinimumSize(111,carWidth);
+    temp->setMaximumSize(111,carWidth);
     temp->setIcon(carIcon);
     temp->setIconSize(temp->size());
 
@@ -345,6 +370,41 @@ void ParkingLot::my_sleep()
         QCoreApplication::processEvents(QEventLoop::AllEvents,100);
     }
 }
+
+void ParkingLot::CalculateCarWidth(int num)
+{
+    int width = 141 - 4.7*num;
+    carWidth = width;
+
+    if (num % 2 == 0){
+        first = second = num / 2;
+    }
+    else {
+        first = (num + 1) / 2;
+        second = (num - 1) / 2;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
