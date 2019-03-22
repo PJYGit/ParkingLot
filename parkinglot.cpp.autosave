@@ -222,7 +222,7 @@ void ParkingLot::on_CarOut_clicked()
             QPushButton *temp = queue.dequeue();
             QString ex_name = temp->objectName();
 
-            if (nowCar.endsWith("1")){
+            if (nowCar.endsWith("1")){ 
                 CarInAnimation(w->x()+110);
 
                 temp->setObjectName(ex_name+"1");
