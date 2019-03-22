@@ -18,8 +18,8 @@ class ParkingLot : public QMainWindow
 public:
     explicit ParkingLot(QWidget *parent = nullptr);
     ~ParkingLot();
-    void CarInAnimation();
-    void CarOutAnimation();
+    void CarInAnimation(int xright);
+    void CarOutAnimation(int xleft);
     void my_sleep();
 
 private slots:
